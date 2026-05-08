@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Output (generated at runtime)
+# output/digests/ is tracked: it serves as the audit corpus for the
+# remote dedup-quality check routine.
+output/scripts/
+output/episodes/
+
+# Audio files
+*.mp3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

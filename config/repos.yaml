@@ -1,0 +1,38 @@
+# Repos to track for the weekly UCP digest.
+#
+# Multiple repos may share a `group` — when set, all repos in the same group
+# are folded into a single digest topic. This keeps episodes coherent when
+# related repos see activity in the same week.
+#
+# Owner is the GitHub org. Override per-repo only if a repo lives elsewhere.
+
+owner: Universal-Commerce-Protocol
+
+repos:
+  - name: ucp
+    display: "Spec & Documentation"
+    group: "Spec & Schema"
+  - name: ucp-schema
+    display: "Schema Validator"
+    group: "Spec & Schema"
+
+  - name: python-sdk
+    display: "Python SDK"
+    group: "Client SDKs"
+  - name: js-sdk
+    display: "JavaScript SDK"
+    group: "Client SDKs"
+
+  - name: conformance
+    display: "Conformance Tests"
+    group: "Testing & Samples"
+  - name: samples
+    display: "Samples"
+    group: "Testing & Samples"
+
+  - name: meeting-minutes
+    display: "Governance Meeting Minutes"
+    group: "Governance & Community"
+  - name: .github
+    display: "Org Configuration"
+    group: "Governance & Community"

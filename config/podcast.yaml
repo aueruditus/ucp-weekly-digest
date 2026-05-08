@@ -1,0 +1,21 @@
+podcast:
+  name: "UCP Weekly Digest"
+  author: "Universal Commerce Protocol Community"
+  description: >
+    A weekly podcast covering activity across the Universal Commerce Protocol
+    (UCP) GitHub repos — spec evolution, SDK releases, conformance work,
+    governance, and community contributions. Two AI-powered hosts unpack the
+    week's pull requests, releases, issues, and discussions for protocol
+    implementers.
+  language: "en-AU"
+  categories:
+    - "Technology"
+    - "Technology > Software How-To"
+  explicit: false
+  artwork_url: ""
+  website: "https://ucp.dev"
+  email: "ian@circulr.ai"
+  timezone: "Australia/Sydney"
+  target_duration_minutes: 20
+  target_word_count_min: 2500
+  target_word_count_max: 3500

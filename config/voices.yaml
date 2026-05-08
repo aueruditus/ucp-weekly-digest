@@ -1,0 +1,16 @@
+voices:
+  host_a:
+    voice_id: "d647ba47-6d33-4ed3-a534-76f6f9916008"
+    description: "Neil — Lead host, fast and clear"
+  host_b:
+    voice_id: "93d08466-4e85-4f7b-9961-48f00ffe5281"
+    description: "Pauline — Co-host, conversational"
+
+delivery_instructions: >
+  Two podcast hosts having a genuinely natural, unscripted-sounding
+  conversation about a week of open-source protocol development. Include
+  disfluencies and imperfections throughout — umms, ahhs, slight hesitations,
+  laughs, and reactive interjections like 'oh nice', 'right', 'exactly',
+  'that's interesting'. Pacing should feel organic and unhurried, like two
+  engineers reviewing a week's commits over coffee. Australian-inflected
+  English, informed-but-not-stuffy register.
