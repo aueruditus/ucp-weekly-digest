@@ -36,3 +36,11 @@ repos:
   - name: .github
     display: "Org Configuration"
     group: "Governance & Community"
+
+  # Internal — Circulr Tech / Australia Post sustainability standard.
+  # Tracked alongside UCP so the digest can map our own progress against
+  # the EP graduation criteria, not just external UCP activity.
+  - owner: aueruditus
+    name: au-com-auspost-sustainability-standard
+    display: "AP Sustainability Standard (internal)"
+    group: "Internal — AP Sustainability"

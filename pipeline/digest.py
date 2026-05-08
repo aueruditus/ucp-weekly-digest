@@ -37,6 +37,7 @@ def _build_system_prompt(
     audience = context.get("audience", "").strip()
     editorial = context.get("editorial_angle", "").strip()
     deprioritise = context.get("deprioritise", [])
+    ep = context.get("ep_graduation_criteria") or {}
 
     if recent_summary and last_ep_date:
         dedup_block = f"""
@@ -61,6 +62,26 @@ DEDUPLICATION RULES (STRICT):
         if audience else ""
     )
 
+    ep_section = ""
+    if ep:
+        wdc = ep.get("working_draft_to_candidate", [])
+        cs = ep.get("candidate_to_stable", [])
+        levers = ep.get("approval_path_levers", [])
+        wdc_lines = "\n".join(f"  - [{c['id']}] {c['criterion']}" for c in wdc)
+        cs_lines = "\n".join(f"  - [{c['id']}] {c['criterion']}" for c in cs)
+        lever_lines = "\n".join(
+            f"  - {l['lever']}: {l['when']}\n      → {l['action']}"
+            for l in levers
+        )
+        ep_section = (
+            "EP GRADUATION CRITERIA (use these IDs verbatim when tagging stories):\n"
+            f"  Status: {ep.get('proposal_status', '')}\n\n"
+            f"  Working Draft → Candidate:\n{wdc_lines}\n\n"
+            f"  Candidate → Stable:\n{cs_lines}\n\n"
+            "APPROVAL-PATH LEVERS (treat any matching activity as headline):\n"
+            f"{lever_lines}\n\n"
+        )
+
     return f"""You are an editor compiling a weekly internal briefing for the Circulr
 Tech team about activity across the Universal Commerce Protocol (UCP)
 GitHub repositories.
@@ -71,7 +92,7 @@ ABOUT THE HOST:
 ABOUT UCP:
 {project}
 
-{audience_section}EDITORIAL PERSPECTIVE:
+{audience_section}{ep_section}EDITORIAL PERSPECTIVE:
 {editorial}
 
 DEPRIORITISE:
@@ -79,15 +100,27 @@ DEPRIORITISE:
 
 INPUT FORMAT:
 You will be given a structured JSON payload of GitHub activity grouped by
-theme (Spec & Schema, Client SDKs, Testing & Samples, Governance & Community).
-Each group contains repos and each repo lists merged PRs, open PRs, issues
-opened, issues closed, and releases — all within the past 7 days.
+theme. Each group contains repos and each repo lists merged PRs, open PRs,
+issues opened, issues closed, releases, and a `contributors` block (per-author
+activity counts: PRs authored, reviews submitted, issue/PR comments) — all
+within the past 7 days. The `Internal — AP Sustainability` group covers the
+team's own progress on the standard repo.
 
 YOUR TASK:
-Synthesise this raw activity into a digest with one topic per group. For each
-group, surface the most significant stories (a "story" is one PR, release,
-issue, or thematic cluster). Aim for 1-4 stories per group, fewer is fine,
-zero is fine for a quiet group.
+Synthesise this raw activity into a digest. Produce three things:
+
+1. `topics` — one per group, with 1-4 stories each (zero is fine for quiet
+   groups). Stories follow the schema below.
+2. `engagement_opportunities` — 1-3 specific places where the Circulr Tech
+   team should engage this week to build EP capital BEFORE submission.
+3. `precedent_signals` — 0-3 UCP merges or governance items this week that
+   set a pattern citable in the EP submission.
+4. `criterion_progress` — 0-N items mapping this week's activity (UCP-side
+   AND internal AP standards repo-side) to specific graduation-criterion IDs
+   that moved.
+5. `active_reviewers` — top 3-5 named contributors across `ucp`, `ucp-schema`,
+   and `meeting-minutes` this week, with one-line readouts on their pattern.
+6. `connections` — cross-repo themes / coupling / strategic narrative.
 
 QUALITY BAR FOR A "STORY" (internal-audience version):
 - ANY change that touches: vendor namespaces, the extension/companion
@@ -117,12 +150,44 @@ OUTPUT — return ONLY a JSON object matching this schema, no markdown fencing:
           "published_date": "YYYY-MM-DD (merge date, release date, issue close date, etc.)",
           "summary": "string (2-3 sentences: what changed and why it matters)",
           "source": "string (e.g. 'PR #42 in ucp-schema by @username' or 'Release v0.3.0 in python-sdk')",
-          "relevance": "string (1 sentence on why the Circulr Tech team should care — call out EP impact, roadmap impact, or sales/exec implications explicitly)"
+          "relevance": "string (1 sentence on why the Circulr Tech team should care — EP impact, roadmap impact, or sales/exec implications)",
+          "criterion_ids": ["array of EP criterion IDs this story moves, e.g. 'wdc.schema_stability' — empty if none"],
+          "lever_match": "string (name of an approval_path_lever this story matches, or empty)"
         }}
       ]
     }}
   ],
-  "connections": "string (1 short paragraph noting cross-repo themes or coupling — e.g. 'a schema field added in ucp-schema landed in both SDKs this week')"
+  "engagement_opportunities": [
+    {{
+      "where": "string (repo + PR/issue/discussion number/url)",
+      "what_to_say": "string (one or two sentences of the substantive comment to leave — not 'review' or 'comment', the actual position to take)",
+      "best_role": "string (architect | engineer | PM | Ian | exec)",
+      "ep_capital": "string (1 sentence on how engaging here builds EP capital)"
+    }}
+  ],
+  "precedent_signals": [
+    {{
+      "where": "string (repo + PR/decision)",
+      "precedent": "string (the pattern set, in EP-citable language)",
+      "ep_use": "string (how to cite it in the EP submission)"
+    }}
+  ],
+  "criterion_progress": [
+    {{
+      "criterion_id": "string (e.g. 'wdc.brands' — must match an ID in ep_graduation_criteria)",
+      "direction": "forward | backward | sideways",
+      "change": "string (what moved, with quantity where possible)",
+      "source": "string (the activity source — UCP repo or internal AP standards repo)"
+    }}
+  ],
+  "active_reviewers": [
+    {{
+      "login": "string (GitHub handle)",
+      "repos": ["array of repo names where they were active"],
+      "pattern": "string (1 line on their tone / focus / what kind of submission they'd receive well)"
+    }}
+  ],
+  "connections": "string (1 paragraph: cross-repo themes, coupling, strategic narrative. If quiet week, end with 'EP work to push this week:' and a short bulleted suggestion list)"
 }}"""
 
 

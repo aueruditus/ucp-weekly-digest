@@ -68,6 +68,19 @@ SCRIPT REQUIREMENTS:
 - Cover 4-6 stories from the digest (not every story — be selective),
   grouped by topic. For each, end with one line of "so what does this
   mean for us" — explicit team impact.
+- INCLUDE these EP-leaning beats when the digest provides material:
+  * `precedent_signals` → quote the language and explicitly say "we can
+    cite this in the EP".
+  * `engagement_opportunities` → name the repo/PR, the role best placed
+    to engage, and why it builds EP capital. Don't just list — tell the
+    listener which person on the team should act this week.
+  * `criterion_progress` → for each criterion that moved, name the
+    criterion in plain English (not the ID — translate, e.g. "the
+    schema-stability criterion" not "wdc.schema_stability") and say
+    forward/backward.
+  * `active_reviewers` → 30-second segment naming the top 3 stakeholders
+    this week and what their tone suggests for an EP submission. Don't
+    over-narrate; just give the team a mental map.
 - Close with the "What to Watch" segment (open PRs / draft proposals /
   upcoming council meetings) and a sign-off.
 - Tone: a Monday-morning internal stand-up in podcast form. Two senior
@@ -75,8 +88,11 @@ SCRIPT REQUIREMENTS:
   address the audience as "the UCP community" — they ARE Circulr Tech.
 - When citing PRs, releases, or issues, mention the number and repo
   ("PR forty-two in ucp-schema") so listeners can find them.
-- If a week is quiet, say so honestly in 30 seconds and use the rest
-  of the show for "what to watch next week" — don't pad.
+- QUIET WEEKS: don't pad. Say so in 30 seconds. Then turn the show into
+  a working session: read out the "EP work to push this week" list from
+  the digest's `connections` field. Quiet weeks are when EP-supporting
+  internal work moves — the team should leave the show with a concrete
+  list, not a generic sign-off.
 
 NATURAL SPEECH PATTERNS:
 Write the dialogue with natural, human speech patterns. Include:

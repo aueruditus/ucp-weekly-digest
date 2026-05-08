@@ -106,6 +106,75 @@ project_context: |
 
 
 # -----------------------------------------------------------------------------
+# EP Graduation Criteria (from au.com.auspost.sustainability EP doc)
+# -----------------------------------------------------------------------------
+# Encoded so the digest can map each week's UCP/internal activity to a
+# specific approval-path criterion. When a story moves us closer to (or
+# further from) one of these, the digest should tag it explicitly.
+ep_graduation_criteria:
+  proposal_status: "Working Draft v0.4.2 (5 May 2026); target submission October 2026"
+
+  working_draft_to_candidate:
+    - id: "wdc.brands"
+      criterion: "≥ 5 brands with infrastructure_attested"
+    - id: "wdc.programme_types"
+      criterion: "≥ 3 programme types with conformance profiles"
+    - id: "wdc.agent_queries"
+      criterion: "≥ 1,000 agent queries / month"
+    - id: "wdc.registries"
+      criterion: "All three registry layers (L1/L2/L3) live with certified_scope"
+    - id: "wdc.schema_stability"
+      criterion: "≥ 3 months of schema stability"
+    - id: "wdc.multi_operator"
+      criterion: "≥ 2 operators"
+    - id: "wdc.scope_validation"
+      criterion: "L1 scope-mismatch test cases passing"
+
+  candidate_to_stable:
+    - id: "cs.brands"
+      criterion: "≥ 20 brands across ≥ 2 CAs"
+    - id: "cs.ca_taxonomy"
+      criterion: "≥ 2 certifier_type values in production"
+    - id: "cs.agent_platforms"
+      criterion: "≥ 2 agent platforms actively querying"
+    - id: "cs.backward_compat"
+      criterion: "≥ 6 months backward compatibility"
+    - id: "cs.international"
+      criterion: "≥ 1 non-Australian postal operator"
+    - id: "cs.input_integrity"
+      criterion: "input_integrity manifest independently verified by ≥ 1 third party"
+    - id: "cs.ca_accreditation"
+      criterion: "≥ 1 government-accredited CA active"
+    - id: "cs.item_provenance"
+      criterion: "get_item_provenance operational for ≥ 1 serialised product"
+
+  approval_path_levers:
+    # Specific UCP-side activity patterns that, when they appear, should
+    # be treated as "tilts the EP toward approval" or "raises EP risk".
+    - lever: "vendor_namespace_precedent"
+      when: "Any UCP PR / governance decision codifying how vendor namespaces are registered, declared in /.well-known/ucp, or scoped to controlled domains."
+      action: "Headline. Quote the precedent, note how it supports or threatens the EP architecture."
+    - lever: "extension_companion_semantics"
+      when: "Any change to how extensions or companion capabilities (allOf-style) work — schema rules, naming rules, version rules."
+      action: "Headline. The EP companions (au.com.auspost.sustainability.checkout / .recovery) depend on this."
+    - lever: "mcp_transport_decisions"
+      when: "Any change to MCP transport conventions, capability discovery, or service endpoint semantics."
+      action: "Headline. Our reference MCP server and AP-controlled endpoint design depend on these."
+    - lever: "schema_stability_signals"
+      when: "A v1.0 / RC release; a deprecation policy change; a published breaking-change window."
+      action: "Map to wdc.schema_stability — schema stability is a Candidate criterion. Note implication for our submission timing."
+    - lever: "conformance_governance"
+      when: "Any change to how conformance profiles are defined, accepted, or evaluated."
+      action: "Map to wdc.programme_types and wdc.scope_validation."
+    - lever: "council_composition_or_review_process"
+      when: "meeting-minutes shows changes to council membership, review SLA, EP review template, or extension acceptance criteria."
+      action: "Map to overall approval path. Identify named reviewers whose stance matters."
+    - lever: "competing_namespace"
+      when: "Any other vendor namespace or extension proposal landing in the sustainability / EPR / circularity / DPP lane."
+      action: "Top of show. Differentiate or align — don't ignore."
+
+
+# -----------------------------------------------------------------------------
 # Editorial Angle & Tone
 # -----------------------------------------------------------------------------
 editorial_angle: |
@@ -145,10 +214,47 @@ editorial_angle: |
     proposal lands that overlaps the sustainability lane, that's
     a top-of-show item — competitive context the team needs.
 
-  - **HONEST ABOUT QUIET WEEKS.** If only typos and dependabot
-    bumps landed, say so in 30 seconds and use the rest of the show
-    for "what to watch next week" — open PRs to track, upcoming
-    council meetings, EP submission countdown.
+  - **ENGAGEMENT OPPORTUNITIES.** For each week, identify 1-3 places
+    where a Circulr Tech team member could productively engage:
+    a comment on an open RFC, a review on a PR touching extension
+    semantics, a benchmark contribution to conformance, an issue
+    where adding our pilot data would be useful, a discussion where
+    our reference MCP server is relevant prior art. Be specific —
+    repo, PR/issue number, what to say. The point is to build EP
+    capital BEFORE submission, not just react after.
+
+  - **PRECEDENT SPOTTING.** When a UCP merge or governance decision
+    sets a pattern that helps (or hurts) the EP architecture —
+    vendor-namespace registration, capability-services declaration,
+    independent-endpoint conventions, MCP transport conventions,
+    extension/companion governance — call it out as a *precedent*,
+    not just a code change. Quote the language we should reuse in
+    the EP.
+
+  - **GRADUATION-CRITERION MAPPING.** When activity affects any of
+    the EP's Working Draft → Candidate or Candidate → Stable
+    criteria (encoded under `ep_graduation_criteria` in this file),
+    name the criterion ID explicitly (e.g. `wdc.schema_stability`).
+    The team needs to track which criteria are moving.
+
+  - **ACTIVE REVIEWERS.** The `contributors` block on each repo's
+    activity payload lists who's reviewing and commenting this week.
+    For `ucp`, `ucp-schema`, `meeting-minutes`, treat the top 3-5
+    contributors as named stakeholders — call them out when their
+    review, comment, or position matters for the EP path.
+
+  - **QUIET WEEKS → PREPOSITION.** When UCP itself is quiet, that's
+    the most valuable kind of week — call it out and prompt the team
+    to *push EP-supporting work* this week: pilot-data updates, test
+    cases, CA accreditation milestones, internal repo progress
+    against graduation criteria. End the show with a concrete
+    "EP work to push this week" list, not a generic sign-off.
+
+  - **INTERNAL REPO SIGNALS.** The `Internal — AP Sustainability`
+    group covers our own progress on the standard. Treat its activity
+    as ground truth on graduation-criterion progress (e.g., schema
+    stability, scope-validation tests, manifest implementation).
+    Compare to the criteria block to flag what's still missing.
 
   - **SCOPE DISCIPLINE.** Don't speculate about Stripe / OpenAI /
     Anthropic agentic-commerce announcements unless a UCP repo
@@ -218,11 +324,43 @@ recurring_segments:
       capabilities that landed this week and overlap our sustainability
       lane. Strategic context the exec team needs.
 
+  - name: "Engagement Opportunities"
+    description: |
+      Where to spend our community-engagement effort this week. For each
+      item, name the repo, the PR/issue number, what to say, and which
+      role (architect / engineer / Ian) is best placed to engage.
+      Include only opportunities where a thoughtful comment or review
+      builds EP capital — not generic drive-by participation.
+
+  - name: "Precedent Watch"
+    description: |
+      Merges or governance decisions from this week that set a pattern
+      we can reuse in the EP. For each: quote the language, name the
+      criterion (`vendor_namespace`, `extension/companion`, `MCP`, etc),
+      and note how to cite it in the EP submission.
+
+  - name: "EP Criterion Tracker"
+    description: |
+      For each criterion that moved this week (forward or backward),
+      name the criterion ID (e.g. `wdc.schema_stability`), state the
+      change, and quantify progress where possible. Include criteria
+      affected by the internal AP Sustainability Standard repo, not
+      just UCP-side activity.
+
+  - name: "Active Reviewers"
+    description: |
+      Brief stakeholder readout for `ucp`, `ucp-schema`, and
+      `meeting-minutes`: who reviewed / commented most this week, and
+      what their pattern suggests about how they'll receive an
+      EP submission. Don't over-narrate — 30-second segment max.
+
   - name: "What to Watch"
     description: |
       Closing segment — open PRs, draft proposals, upcoming council
-      meetings, and EP submission countdown. The team's "things to
-      keep an eye on this week" list.
+      meetings, and EP submission countdown. On quiet weeks, expand
+      this segment into a concrete "EP work to push this week" list:
+      what should the team ship internally to move graduation
+      criteria forward.
 
 
 # -----------------------------------------------------------------------------

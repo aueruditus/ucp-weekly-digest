@@ -30,7 +30,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_SITE_URL: ${{ secrets.NETLIFY_SITE_URL }}
-          GH_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_FETCH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
           PIPELINE_ENVIRONMENT: production
           RUN_TRIGGER: github
           GITHUB_RUN_ID: ${{ github.run_id }}

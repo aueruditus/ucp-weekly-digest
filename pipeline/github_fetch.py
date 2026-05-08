@@ -177,6 +177,10 @@ def fetch_repo_activity(owner: str, repo: str, since: datetime) -> dict:
         if _within_window(r.get("published_at"), since) and not r.get("draft")
     ]
 
+    # Reviewer / commenter activity — for the EP path it matters who's
+    # active in spec/governance discussion, not just what landed.
+    contributors = _aggregate_contributors(owner, repo, since)
+
     summary = {
         "owner": owner,
         "repo": repo,
@@ -185,13 +189,96 @@ def fetch_repo_activity(owner: str, repo: str, since: datetime) -> dict:
         "issues_opened": issues_opened,
         "issues_closed": issues_closed,
         "releases": releases,
+        "contributors": contributors,
     }
     logger.info(
         f"  {owner}/{repo}: {len(merged_prs)} merged PR(s), {len(open_prs)} new open PR(s), "
         f"{len(issues_opened)} issue(s) opened, {len(issues_closed)} issue(s) closed, "
-        f"{len(releases)} release(s)"
+        f"{len(releases)} release(s), {len(contributors)} active contributor(s)"
     )
     return summary
+
+
+def _aggregate_contributors(owner: str, repo: str, since: datetime) -> list[dict]:
+    """Build a per-author activity summary across PR reviews and issue/PR comments.
+
+    The repo-level "active contributors" view is what lets the digest
+    identify who's setting tone in spec/governance discussions — useful
+    both for picking engagement targets and for week-over-week stakeholder
+    tracking.
+    """
+    counts: dict[str, dict] = {}
+
+    def bump(login: str | None, key: str):
+        if not login:
+            return
+        rec = counts.setdefault(
+            login, {"login": login, "prs_authored": 0, "issues_authored": 0,
+                    "reviews": 0, "issue_comments": 0, "pr_comments": 0}
+        )
+        rec[key] += 1
+
+    # PRs and issues: authors are easy from already-fetched data, but we
+    # want comments and reviews too. Re-fetch via dedicated endpoints to
+    # pick up commenters who didn't author anything.
+    try:
+        issue_comments = _paginate(
+            f"/repos/{owner}/{repo}/issues/comments",
+            params={"sort": "created", "direction": "desc",
+                    "since": since.isoformat()},
+            max_pages=3,
+        )
+        for c in issue_comments:
+            login = (c.get("user") or {}).get("login")
+            # GitHub returns the same endpoint for issue and PR comments;
+            # distinguish by issue_url vs pull_request_url in the comment payload.
+            key = "pr_comments" if "/pulls/" in (c.get("issue_url") or c.get("html_url") or "") else "issue_comments"
+            bump(login, key)
+    except requests.HTTPError as e:
+        logger.warning(f"  comments fetch failed for {owner}/{repo}: {e}")
+
+    try:
+        # Pull request reviews require listing per-PR; do it for the PRs
+        # we already know touched the window. Cheap because most repos
+        # see < 20 PRs in a week.
+        pr_pages = _paginate(
+            f"/repos/{owner}/{repo}/pulls",
+            params={"state": "all", "sort": "updated", "direction": "desc"},
+            max_pages=2,
+        )
+        for pr in pr_pages:
+            if not _within_window(pr.get("updated_at"), since):
+                break
+            number = pr.get("number")
+            try:
+                reviews = _get(f"/repos/{owner}/{repo}/pulls/{number}/reviews")
+            except requests.HTTPError:
+                continue
+            for rev in reviews or []:
+                if not _within_window(rev.get("submitted_at"), since):
+                    continue
+                login = (rev.get("user") or {}).get("login")
+                bump(login, "reviews")
+            # Authors of PRs in the window
+            if _within_window(pr.get("created_at"), since):
+                bump((pr.get("user") or {}).get("login"), "prs_authored")
+    except requests.HTTPError as e:
+        logger.warning(f"  reviews fetch failed for {owner}/{repo}: {e}")
+
+    # Sort by total activity desc, drop bots so the EP-path narrative stays
+    # focused on humans whose review actually carries weight.
+    out = sorted(
+        (
+            r for r in counts.values()
+            if not (r["login"].endswith("[bot]") or r["login"] == "github-actions")
+        ),
+        key=lambda r: (
+            r["reviews"] * 3 + r["pr_comments"] * 2
+            + r["prs_authored"] * 2 + r["issues_authored"] + r["issue_comments"]
+        ),
+        reverse=True,
+    )
+    return out[:20]  # cap — Claude doesn't need the long tail
 
 
 def fetch_week_activity(repos: list[dict], days: int = 7) -> dict:
