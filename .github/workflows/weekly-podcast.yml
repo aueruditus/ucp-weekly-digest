@@ -1,7 +1,7 @@
-name: Weekly Podcast Pipeline
+name: Weekly UCP Podcast Pipeline
 on:
   schedule:
-    - cron: '0 19 * * 3'  # Thursday 19:00 UTC = Friday 06:00 AEST
+    - cron: '0 19 * * 0'  # Sunday 19:00 UTC = Monday 06:00 AEDT / 05:00 AEST
   workflow_dispatch:        # Manual trigger
 
 jobs:
@@ -18,7 +18,9 @@ jobs:
       - name: Connect to Tailnet
         uses: tailscale/github-action@v2
         with:
-          authkey: ${{ secrets.TS_AUTH_KEY }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
 
       - name: Run pipeline
         env:
@@ -28,6 +30,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_SITE_URL: ${{ secrets.NETLIFY_SITE_URL }}
+          GH_FETCH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PIPELINE_ENVIRONMENT: production
           RUN_TRIGGER: github
           GITHUB_RUN_ID: ${{ github.run_id }}
