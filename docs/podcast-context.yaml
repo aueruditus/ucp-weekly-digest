@@ -33,9 +33,49 @@ personal_context: |
   This means the host is not a neutral observer of UCP — they ship code
   against the spec, run an MCP server, and have a direct stake in
   vendor-namespace conventions, capability declarations, and the
-  extension/companion model. They should disclose this when an episode
-  touches vendor namespaces, sustainability, or extension governance,
-  and otherwise stay focused on what shipped in the repos this week.
+  extension/companion model.
+
+
+# -----------------------------------------------------------------------------
+# Audience
+# -----------------------------------------------------------------------------
+# This is an INTERNAL Circulr Tech briefing, not a public developer review.
+# Listeners are colleagues who already know the company, the
+# au.com.auspost.sustainability proposal, and the R.M. Williams pilot.
+# They want "what does the week's UCP activity mean for our work" —
+# not a UCP 101 explainer.
+audience: |
+  The audience is the Circulr Tech team, with a mix of roles. Each story
+  should be framed so all of them get something out of it:
+
+  - **Executives** — strategic implications. Does this week's activity
+    create or close risk for the October 2026 Enhancement Proposal?
+    Has any UCP governance signal shifted (council composition,
+    extension policy, vendor-namespace rules)? Is anyone else moving
+    into the sustainability lane?
+
+  - **Product management** — roadmap implications for circulr.ai.
+    Schema changes that affect the measurement platform's data model.
+    Capability registrations that overlap with sustainability data.
+    SDK changes that affect the time/cost of customer integration.
+
+  - **Sales** — talkable narrative. What's "live" vs "draft" in UCP this
+    week. Adoption signals from external implementers. Things they can
+    cite to prospects without misrepresenting the state of the spec.
+
+  - **Platform architects** — design-level depth. Extension vs companion
+    model decisions, conformance posture changes, MCP transport
+    decisions, schema-authoring conventions, and trust/registry
+    architecture moves.
+
+  - **Engineers** — concrete diff-level detail. PR numbers, version
+    bumps, breaking changes, migration steps, and any test-suite
+    changes that affect the team's integration work.
+
+  Practical implication: the script should mix registers — open
+  strategic, then go technical, then close with "what to watch". Don't
+  dumb things down for executives, but DO surface the strategic angle
+  before the patch-level detail so they don't tune out.
 
 
 # -----------------------------------------------------------------------------
@@ -69,40 +109,54 @@ project_context: |
 # Editorial Angle & Tone
 # -----------------------------------------------------------------------------
 editorial_angle: |
-  This is a developer-facing weekly review, not a marketing channel. Frame
-  stories through the lens of an engineer evaluating UCP for production
-  use:
+  This is an INTERNAL Circulr Tech weekly briefing on UCP activity.
+  The frame is "what does this mean for us" — not a UCP-community
+  newsletter. Frame every story through the lens of impact on
+  Circulr Tech's roadmap, the Australia Post Enhancement Proposal,
+  and the team's day-to-day work:
 
-  - Lead with breaking changes, new endpoints, and schema additions —
-    these are what implementers actually need to know.
-  - Distinguish between merged-and-shipped vs. open-and-debated. A
-    contentious open PR is a different story than a quiet merge.
-  - Highlight cross-repo coupling: a schema change in `ucp-schema` that
-    cascades to both SDKs is more interesting than three independent
-    docs PRs.
-  - Treat releases (tags, GitHub Releases) as headline events. Surface
-    version numbers and link release notes when they exist.
-  - When governance decisions land in `meeting-minutes`, summarise the
-    outcome and the rationale, not just the meeting date.
-  - Be honest about quiet weeks. If only docs typos and dependency bumps
-    landed, say so — don't pad. Listeners notice manufactured drama.
-  - Call out community contributions: first-time contributors, external
-    PRs, and notable issue reporters deserve a mention.
-  - Avoid speculation about non-UCP roadmaps (Stripe, OpenAI, Anthropic
-    agentic-commerce announcements) unless a UCP repo directly references
-    them. Stay close to what the commits show.
-  - DISCLOSURE WHEN RELEVANT: Host A's company (Circulr Tech) is an
-    active UCP implementer working on the `au.com.auspost.sustainability`
-    vendor namespace with Australia Post. When an episode discusses
-    vendor namespaces, the extension/companion model, sustainability,
-    measurement-platform manifests, or similar topics where Host A has
-    direct skin in the game, disclose the interest briefly and move on.
-    Do NOT promote Circulr Tech or the proposal — the disclosure exists
-    for listener trust, not airtime.
+  - **EP-IMPACT FIRST.** For each story, ask: does this affect the
+    `au.com.auspost.sustainability` proposal, the
+    `dev.ucp.shopping.sustainability` capability, vendor-namespace
+    rules, the extension/companion model, the MCP server contract,
+    or any of the trust/manifest/computation primitives we depend on?
+    If yes, lead with the impact. If no, just state the change.
 
-  The hosts should sound like two engineers reviewing the week's git log
-  together — informed, occasionally opinionated about API design, and
-  always grounded in what the code actually changed.
+  - **CIRCULR.AI ROADMAP IMPACT.** Schema changes that hit our data
+    model, SDK API changes that affect customer integration time,
+    conformance changes that block or unblock our reference MCP
+    server — call these out specifically. Don't make PMs/architects
+    work to translate.
+
+  - **MERGED VS. DEBATED.** Distinguish between merged-and-shipped
+    and open-and-contested. A contentious open PR on extension
+    semantics is a strategic issue; a quiet doc merge is a footnote.
+
+  - **RELEASES ARE HEADLINES.** Version bumps in `ucp-schema`,
+    `python-sdk`, `js-sdk`, or `conformance` are episode openers.
+    Surface version numbers and migration burden.
+
+  - **GOVERNANCE SIGNALS.** When `meeting-minutes` lands, summarise
+    the decision AND its second-order effect on our EP path —
+    council composition, extension policy, namespace registration
+    process, conformance criteria.
+
+  - **OUTSIDE MOVES.** If another vendor namespace or extension
+    proposal lands that overlaps the sustainability lane, that's
+    a top-of-show item — competitive context the team needs.
+
+  - **HONEST ABOUT QUIET WEEKS.** If only typos and dependabot
+    bumps landed, say so in 30 seconds and use the rest of the show
+    for "what to watch next week" — open PRs to track, upcoming
+    council meetings, EP submission countdown.
+
+  - **SCOPE DISCIPLINE.** Don't speculate about Stripe / OpenAI /
+    Anthropic agentic-commerce announcements unless a UCP repo
+    directly references them. Stay close to what the commits show.
+
+  Tone: two senior colleagues catching up on a Monday morning —
+  informed, candid, willing to disagree on API design, and always
+  asking "so what does this mean for us this week".
 
 
 # -----------------------------------------------------------------------------
@@ -120,39 +174,55 @@ deprioritise:
 # Recurring Segments
 # -----------------------------------------------------------------------------
 recurring_segments:
+  - name: "EP Impact Watch"
+    description: |
+      The most important segment for an internal audience. Anything in
+      the week's UCP activity that affects the
+      `au.com.auspost.sustainability` Enhancement Proposal — vendor
+      namespace rules, extension/companion semantics, capability
+      registration process, governance steps, or schema primitives
+      we depend on. Frame as risk-up / risk-down for the October
+      submission target.
+
   - name: "Spec Watch"
     description: |
-      The week's notable changes to the `ucp` spec or `ucp-schema`
-      validator — new fields, deprecated fields, breaking changes,
-      RFC-style proposals.
+      Notable changes to the `ucp` spec or `ucp-schema` validator —
+      new fields, deprecated fields, breaking changes, RFC-style
+      proposals. Call out specifically what circulr.ai's data model
+      or MCP server has to change in response.
 
   - name: "SDK Roundup"
     description: |
       Releases and notable PRs across `python-sdk` and `js-sdk`. Call
       out version bumps, new public APIs, and any SDK-divergence where
-      one language ships before the other.
+      one language ships before the other. Note: most of our customer
+      integrations come through these SDKs, so version bumps have
+      direct sales-cycle impact.
 
   - name: "Conformance Corner"
     description: |
       What's new in the `conformance` test suite and `samples` repos —
       new test cases, sample apps, and any conformance failures that
-      surfaced this week.
+      our reference MCP server would now hit (or no longer hit).
 
   - name: "Governance Update"
     description: |
       Anything from `meeting-minutes` or `.github` worth flagging:
       council decisions, governance PRs, policy changes, new CODEOWNERS.
+      Read between the lines — what does this mean for how our EP gets
+      received in October?
 
-  - name: "Issue Spotlight"
+  - name: "Outside Moves"
     description: |
-      One open issue or discussion worth a closer look — usually a design
-      debate, a tricky bug report, or a feature request that's gaining
-      traction.
+      Other vendor namespaces, extension proposals, or competing
+      capabilities that landed this week and overlap our sustainability
+      lane. Strategic context the exec team needs.
 
-  - name: "First Contributors"
+  - name: "What to Watch"
     description: |
-      Welcome new external contributors who landed their first PR this
-      week.
+      Closing segment — open PRs, draft proposals, upcoming council
+      meetings, and EP submission countdown. The team's "things to
+      keep an eye on this week" list.
 
 
 # -----------------------------------------------------------------------------

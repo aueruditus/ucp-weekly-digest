@@ -21,6 +21,7 @@ def _build_script_system_prompt(context: dict) -> str:
     """Build the script system prompt with editorial context and recurring segments."""
     editorial = context.get("editorial_angle", "").strip()
     project = context.get("project_context", "").strip()
+    audience = context.get("audience", "").strip()
     segments = context.get("recurring_segments", [])
 
     meta = load_podcast_meta()
@@ -31,17 +32,22 @@ def _build_script_system_prompt(context: dict) -> str:
         segment_lines.append(f"- **{seg['name']}**: {seg.get('description', '').strip()}")
     segments_section = "\n".join(segment_lines) if segment_lines else ""
 
-    return f"""You are a podcast scriptwriter for "{show_name}", a weekly developer-facing
-podcast about activity in the Universal Commerce Protocol (UCP) GitHub
+    audience_section = (
+        f"AUDIENCE (internal — do not address them as 'the UCP community'):\n{audience}\n\n"
+        if audience else ""
+    )
+
+    return f"""You are a podcast scriptwriter for "{show_name}", a weekly internal
+briefing on activity in the Universal Commerce Protocol (UCP) GitHub
 repositories. The show has two hosts:
 
 - HOST A: The lead presenter. Senior platform engineer, Australian-inflected
   tone, comfortable with API design and protocol semantics. Speaks from
-  practitioner experience.
+  practitioner experience as Circulr Tech's CTO.
 - HOST B: The curious co-host. Asks smart follow-up questions, pushes back
   on hand-wavy explanations, and translates jargon for less-deep listeners.
 
-ABOUT UCP (background — do not recite verbatim):
+{audience_section}ABOUT UCP (background — do not recite verbatim, audience already knows):
 {project}
 
 EDITORIAL PERSPECTIVE:
@@ -54,17 +60,23 @@ SCRIPT REQUIREMENTS:
 - HARD LENGTH CAP: 3,500 words maximum (approximately 20 minutes of audio).
   This is a strict limit — longer scripts cause audio generation to fail.
   Be selective: cover fewer stories rather than overshoot.
-- Open with a brief intro referencing the week and the headline development.
+- Open with a brief intro referencing the week and the single most
+  EP-impacting development of the week (or, if none, the headline change).
+- Mix registers across the show: open strategic (for execs and PMs),
+  go technical mid-show (architects and engineers), close with a
+  "what's talkable this week" beat for sales.
 - Cover 4-6 stories from the digest (not every story — be selective),
-  grouped by topic.
-- Include natural transitions, banter, and reactions between hosts.
-- Close with a short "what to watch" segment (open PRs / issues worth
-  tracking) and a sign-off.
-- Tone: technical but conversational, like two engineers reviewing the
-  week's commits over coffee. Australian references where natural.
+  grouped by topic. For each, end with one line of "so what does this
+  mean for us" — explicit team impact.
+- Close with the "What to Watch" segment (open PRs / draft proposals /
+  upcoming council meetings) and a sign-off.
+- Tone: a Monday-morning internal stand-up in podcast form. Two senior
+  colleagues catching up. Australian references where natural. NEVER
+  address the audience as "the UCP community" — they ARE Circulr Tech.
 - When citing PRs, releases, or issues, mention the number and repo
   ("PR forty-two in ucp-schema") so listeners can find them.
-- If a week is quiet, say so honestly rather than padding.
+- If a week is quiet, say so honestly in 30 seconds and use the rest
+  of the show for "what to watch next week" — don't pad.
 
 NATURAL SPEECH PATTERNS:
 Write the dialogue with natural, human speech patterns. Include:

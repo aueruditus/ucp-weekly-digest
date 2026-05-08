@@ -34,6 +34,7 @@ def _build_system_prompt(
     """Build the digest system prompt with editorial context."""
     personal = context.get("personal_context", "").strip()
     project = context.get("project_context", "").strip()
+    audience = context.get("audience", "").strip()
     editorial = context.get("editorial_angle", "").strip()
     deprioritise = context.get("deprioritise", [])
 
@@ -55,8 +56,14 @@ DEDUPLICATION RULES (STRICT):
     else:
         dedup_block = ""
 
-    return f"""You are an editor compiling a weekly briefing about activity across the
-Universal Commerce Protocol (UCP) GitHub repositories.
+    audience_section = (
+        f"AUDIENCE (internal Circulr Tech team):\n{audience}\n\n"
+        if audience else ""
+    )
+
+    return f"""You are an editor compiling a weekly internal briefing for the Circulr
+Tech team about activity across the Universal Commerce Protocol (UCP)
+GitHub repositories.
 
 ABOUT THE HOST:
 {personal}
@@ -64,7 +71,7 @@ ABOUT THE HOST:
 ABOUT UCP:
 {project}
 
-EDITORIAL PERSPECTIVE:
+{audience_section}EDITORIAL PERSPECTIVE:
 {editorial}
 
 DEPRIORITISE:
@@ -82,15 +89,21 @@ group, surface the most significant stories (a "story" is one PR, release,
 issue, or thematic cluster). Aim for 1-4 stories per group, fewer is fine,
 zero is fine for a quiet group.
 
-QUALITY BAR FOR A "STORY":
-- A merged PR or release with substantive changes — flag the version, link
-  the URL, summarise what changed in one or two sentences.
+QUALITY BAR FOR A "STORY" (internal-audience version):
+- ANY change that touches: vendor namespaces, the extension/companion
+  model, capability registration, MCP transport, schema primitives in
+  the trust/manifest/computation lanes, or sustainability-adjacent
+  fields. These are EP-impact items — always include, even if small.
+- A merged PR or release with substantive changes — flag the version,
+  the URL, what changed in one or two sentences.
 - A cluster of related PRs that together advance one feature.
 - A high-engagement issue or discussion (multiple comments, contested
-  decisions, design proposals).
-- A first-time external contribution — worth a mention even if small.
-- NOT a story: dependabot bumps, lint config tweaks, single-line typo fixes,
-  unmerged draft PRs with no review activity.
+  decisions, design proposals) — especially anything signalling how
+  council reviews extension proposals.
+- An "outside move": another vendor namespace or extension proposal
+  landing that overlaps the sustainability lane.
+- NOT a story: dependabot bumps, lint config tweaks, single-line typo
+  fixes, unmerged draft PRs with no review activity.
 
 OUTPUT — return ONLY a JSON object matching this schema, no markdown fencing:
 {{
@@ -104,7 +117,7 @@ OUTPUT — return ONLY a JSON object matching this schema, no markdown fencing:
           "published_date": "YYYY-MM-DD (merge date, release date, issue close date, etc.)",
           "summary": "string (2-3 sentences: what changed and why it matters)",
           "source": "string (e.g. 'PR #42 in ucp-schema by @username' or 'Release v0.3.0 in python-sdk')",
-          "relevance": "string (1 sentence on why an implementer should care)"
+          "relevance": "string (1 sentence on why the Circulr Tech team should care — call out EP impact, roadmap impact, or sales/exec implications explicitly)"
         }}
       ]
     }}
