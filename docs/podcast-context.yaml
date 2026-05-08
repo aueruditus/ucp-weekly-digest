@@ -6,7 +6,7 @@
 # the digest synthesis prompt and the script-writing prompt.
 #
 # Update this file as UCP's focus areas evolve.
-# Last updated: 2026-05-08
+# Last updated: 2026-05-09
 # =============================================================================
 
 
@@ -14,12 +14,28 @@
 # Personal & Professional Context (about the host, not the project)
 # -----------------------------------------------------------------------------
 personal_context: |
-  Host A is a senior platform engineer with a decade of experience shipping
-  enterprise SaaS, ERP integrations, and AI-powered workflows. They follow
-  open-source protocol projects closely and care about implementation
-  quality — clear specs, honest changelogs, and SDKs that hold up under
-  real load. They speak with Australian-inflected English and lean
+  Host A is Ian Wong, CTO and Co-Founder of Circulr Tech Pty Ltd
+  (circulr.ai) — a Melbourne-based circular economy SaaS platform.
+  Background: 10+ years in enterprise SaaS, prior IBM Consulting Partner
+  in Australia and New Zealand leading digital strategy, supply chain,
+  and retail industry practices. Australian-inflected English,
   practitioner over pundit.
+
+  DISCLOSED INTEREST IN UCP: Circulr Tech is an active UCP implementer.
+  Working with Australia Post on a vendor namespace
+  `au.com.auspost.sustainability` and an Enhancement Proposal targeting
+  the `dev.ucp.shopping.sustainability` capability — adding verified
+  circular-economy lifecycle outcome data to UCP. circulr.ai is the
+  measurement platform; the reference MCP server is being piloted
+  against R.M. Williams (16,215 transactions, 709 sorted items).
+  Target Enhancement Proposal submission: October 2026.
+
+  This means the host is not a neutral observer of UCP — they ship code
+  against the spec, run an MCP server, and have a direct stake in
+  vendor-namespace conventions, capability declarations, and the
+  extension/companion model. They should disclose this when an episode
+  touches vendor namespaces, sustainability, or extension governance,
+  and otherwise stay focused on what shipped in the repos this week.
 
 
 # -----------------------------------------------------------------------------
@@ -75,6 +91,14 @@ editorial_angle: |
   - Avoid speculation about non-UCP roadmaps (Stripe, OpenAI, Anthropic
     agentic-commerce announcements) unless a UCP repo directly references
     them. Stay close to what the commits show.
+  - DISCLOSURE WHEN RELEVANT: Host A's company (Circulr Tech) is an
+    active UCP implementer working on the `au.com.auspost.sustainability`
+    vendor namespace with Australia Post. When an episode discusses
+    vendor namespaces, the extension/companion model, sustainability,
+    measurement-platform manifests, or similar topics where Host A has
+    direct skin in the game, disclose the interest briefly and move on.
+    Do NOT promote Circulr Tech or the proposal — the disclosure exists
+    for listener trust, not airtime.
 
   The hosts should sound like two engineers reviewing the week's git log
   together — informed, occasionally opinionated about API design, and
@@ -138,6 +162,13 @@ watch_list:
   organisations:
     - "Universal Commerce Protocol"
     - "ucp.dev"
+    - "Australia Post"          # Circulr Tech partner; see au.com.auspost.sustainability
+    - "Circulr Tech"            # host's company (disclosed interest)
+  vendor_namespaces:
+    # Lift these to "headline" priority if they ever show up in a UCP
+    # spec PR, governance decision, or capability registration.
+    - "au.com.auspost.sustainability"
+    - "dev.ucp.shopping.sustainability"
   publications_and_sources:
     - "GitHub Releases"
     - "ucp.dev"
